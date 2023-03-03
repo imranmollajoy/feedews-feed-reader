@@ -25,15 +25,17 @@
 
 <Container>
 	<article>
-		<input type="url" name="feed" id="" placeholder="Feed URL" bind:value={url} />
-		<input type="text" name="feedname" id="" placeholder="Feed Name" bind:value={fullName} />
-		<button on:click={() => addNewFeed(url, fullName)}>New feed</button>
+		<details>
+			<summary role="button"> Customization </summary>
+			<input type="url" name="feed" id="" placeholder="Feed URL" bind:value={url} />
+			<input type="text" name="feedname" id="" placeholder="Feed Name" bind:value={fullName} />
+			<button on:click={() => addNewFeed(url, fullName)}>New feed</button>
+
+			<input type="text" name="backup" id="" value={backup} />
+			<input type="text" name="backup" id="" bind:value={imp} placeholder="Import data" />
+			<button on:click={() => importData()}>Import</button>
+		</details>
 	</article>
-	<form>
-		<input type="text" name="backup" id="" value={backup} />
-		<input type="text" name="backup" id="" bind:value={imp} placeholder="Import data" />
-		<button on:click={() => importData()}>Import</button>
-	</form>
 	{#each $feedewsFeedReader?.feeds as source (source.url)}
 		<article>
 			<a href="/source?what={source.url}">
