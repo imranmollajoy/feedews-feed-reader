@@ -30,11 +30,6 @@
 		const articles = $feedewsFeedReader.savedArticles;
 		$feedewsFeedReader.savedArticles = [...articles, { link: link, title: title }];
 	}
-
-	function unsave(link: string) {
-		const filtered = $feedewsFeedReader.savedArticles.filter((i) => i.link !== link);
-		$feedewsFeedReader.savedArticles = filtered;
-	}
 </script>
 
 <Container>

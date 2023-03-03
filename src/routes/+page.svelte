@@ -4,28 +4,42 @@
 
 	import feedewsFeedReader from '$lib/stores/persistant';
 	import Container from '$lib/components/Container.svelte';
-	const { feeds } = $feedewsFeedReader;
-	const sources = [
-		{
-			name: 'prothomalo',
-			fullName: 'Prothomalo',
-			url: 'https://prod-qt-images.s3.amazonaws.com/production/prothomalo-bangla/feed.xml'
-		}
-	];
+	$: url = '';
+	$: fullName = '';
+	async function addNewFeed(url: string, fullName: string) {
+		if (!url && !fullName) return;
+		if ($feedewsFeedReader.feeds?.some((i) => i.url === url)) return;
+		const feeds = [...$feedewsFeedReader.feeds, { fullName: fullName, url: url }];
+		$feedewsFeedReader.feeds = feeds;
+	}
+	function deleteFeed(url: string) {
+		const filtered = $feedewsFeedReader.feeds.filter((i) => i.url !== url);
+		$feedewsFeedReader.feeds = filtered;
+	}
+	function importData() {
+		$feedewsFeedReader = JSON.parse(imp);
+	}
+	$: backup = JSON.stringify($feedewsFeedReader);
+	$: imp = '';
 </script>
 
 <Container>
-	<form action="/read">
-		<input type="url" name="url" id="" placeholder="Feed url" />
-		<button type="submit">New feed</button>
+	<article>
+		<input type="url" name="feed" id="" placeholder="Feed URL" bind:value={url} />
+		<input type="text" name="feedname" id="" placeholder="Feed Name" bind:value={fullName} />
+		<button on:click={() => addNewFeed(url, fullName)}>New feed</button>
+	</article>
+	<form>
+		<input type="text" name="backup" id="" value={backup} />
+		<input type="text" name="backup" id="" bind:value={imp} placeholder="Import data" />
+		<button on:click={() => importData()}>Import</button>
 	</form>
-	{#each feeds as source (source.fullName)}
+	{#each $feedewsFeedReader?.feeds as source (source.url)}
 		<article>
 			<a href="/source?what={source.url}">
-				<h3>
-					{source.fullName}
-				</h3>
+				<h3>{source.fullName}</h3>
 			</a>
+			<button on:click={() => deleteFeed(source.url)}>Delete</button>
 		</article>
 	{/each}
 </Container>
